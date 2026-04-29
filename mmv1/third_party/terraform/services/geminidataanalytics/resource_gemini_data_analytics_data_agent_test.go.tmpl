@@ -127,6 +127,33 @@ resource "google_gemini_data_analytics_data_agent" "agent" {
             enabled = true
           }
         }
+        datasource {
+          big_query_max_billed_bytes = "1000000000"
+        }
+      }
+
+      example_queries {
+        natural_language_question = "How many words does Hamlet have?"
+        sql_query                 = "SELECT SUM(word_count) FROM samples.shakespeare WHERE corpus = 'hamlet'"
+      }
+
+      glossary_terms {
+        display_name = "Corpus"
+        description  = "A collection of written works."
+        labels       = ["literature", "text"]
+      }
+
+      schema_relationships {
+        left_schema_paths {
+          table_fqn = "bigquery-public-data.samples.shakespeare"
+          paths     = ["word"]
+        }
+        right_schema_paths {
+          table_fqn = "bigquery-public-data.samples.shakespeare"
+          paths     = ["word_count"]
+        }
+        sources          = ["LLM_SUGGESTED"]
+        confidence_score = 0.9
       }
     }
   }

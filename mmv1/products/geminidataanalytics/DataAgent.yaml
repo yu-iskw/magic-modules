@@ -47,6 +47,13 @@ examples:
       data_agent_id: 'data-agent-bq'
       dataset_id: 'data_agent'
       table_id: 'sales'
+  - name: 'gemini_data_analytics_data_agent_cmek'
+    primary_resource_id: 'example'
+    min_version: beta
+    vars:
+      data_agent_id: 'data-agent-cmek'
+      key_ring_id: 'data-agent-keyring'
+      crypto_key_id: 'data-agent-key'
 iam_policy:
   parent_resource_attribute: 'data_agent_id'
   method_name_separator: ':'

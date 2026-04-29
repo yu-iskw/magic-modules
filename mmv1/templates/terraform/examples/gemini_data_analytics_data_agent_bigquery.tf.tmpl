@@ -74,11 +74,33 @@ resource "google_gemini_data_analytics_data_agent" "{{$.PrimaryResourceId}}" {
             enabled = true
           }
         }
+        datasource {
+          big_query_max_billed_bytes = "1000000000"
+        }
       }
 
       example_queries {
         natural_language_question = "What is the total order value?"
         sql_query                 = "SELECT SUM(order_total) AS total_order_value FROM sales"
+      }
+
+      glossary_terms {
+        display_name = "Order"
+        description  = "A customer purchase transaction."
+        labels       = ["sales", "transaction"]
+      }
+
+      schema_relationships {
+        left_schema_paths {
+          table_fqn = "${google_bigquery_dataset.dataset.project}.${google_bigquery_dataset.dataset.dataset_id}.${google_bigquery_table.table.table_id}"
+          paths     = ["order_id"]
+        }
+        right_schema_paths {
+          table_fqn = "${google_bigquery_dataset.dataset.project}.${google_bigquery_dataset.dataset.dataset_id}.${google_bigquery_table.table.table_id}"
+          paths     = ["order_total"]
+        }
+        sources          = ["LLM_SUGGESTED"]
+        confidence_score = 0.9
       }
     }
   }
